@@ -1,24 +1,24 @@
-# HunyuanVideoGP: Large Video Generation for the GPU Poor
+# Wan2GP: Wan2.1 Video Generation for the GPU Poor
 
-Containerised version of the Hunyuan Video generator. It is based on the HunyuanVideo project, with deepmeepbeep's optimizations for the GPU-poor. It lets you run a quantized version of the full model on your smaller GPU, e.g. with 12GB of VRAM or even less.
+Containerized version of the Wan2.1 video generator. It is based on the Wan2.1 project, with deepmeepbeep's optimizations for the GPU-poor. It lets you run a quantized version on your smaller GPU, e.g. as low as 6GB of VRAM (22GB optimal).
 
-Tested on RTX 3060 12GB, RTX 3090 TI, L40 and H100. On log VRAM cards, it may still work. Though, there will be limitations to video video quality and inference speed. Currently, only NVIDIA CPU's are supported, as the code relies on CUDA for the processing. 
+Tested on RTX 3060 12GB and RTX 3090 TI. On low VRAM cards, it may still work. Though, there will be limitations to video quality, length and inference speed. Currently, only NVIDIA CPU's are supported, as the code relies on CUDA for the processing. 
 
-During first start-up the container will acquire the latest model and code from [deepmeepbeep's repo](https://github.com/deepbeepmeep/HunyuanVideoGP) and the latest tencent/HunyuanVideo model from [Huggingface](https://huggingface.co/tencent/HunyuanVideo).
+During first start-up the container will acquire the latest code from [deepmeepbeep's repo](https://github.com/deepbeepmeep/Wan2GP) and the latest Wan-AI model from [Huggingface](https://huggingface.co/Wan-AI).
 
 ## Disk size and startup time
 
-The container requires considerable disk space for storage of the AI models. On my setup I observe 7GB for the docker image itself, plus 15GB for cached data. Building the cache will happen the first time when you start the container. That can easily take 20 minutes or more. After that any restart should be faster.
+The container requires considerable disk space for storage of the AI models. On my setup I observe 7GB for the docker image itself, plus 80GB for cached data. Building the cache will happen the first time when you start the container. That can easily take 20 minutes or more. After that any restart should be faster.
 
 It may be advisable to store the cache outside of the conatiner, e.g. by mounting a volume to /workspace.
 
 ## Variables
 
-YUEGP_AUTO_UPDATE: Automatically updates the models and inference scripts to the latest verion upon container start-up (default: 0).
+WAN21_AUTO_UPDATE: Automatically updates the models and inference scripts to the latest version upon container start-up (default: 0).
  - 0: Don't update automatically. Use the scripts that are bundled.
  - 1: Update and use the latest features / models. But also accept that this may being breaking changes.
 
-This conatiner does not provide much confguration, as many other configuration parameters can be changed through the web interface.
+This container does not provide much configuration, as many other configuration parameters can be changed through the web interface.
 
 ### Fixing caching issues
 
@@ -52,9 +52,9 @@ Note that you need to have an NVIDIA GPU installed, including all dependencies f
 
 I am running on a computer with an AMD Ryzen 7 3700X, 128GB Ram, an RTX 3090 TI with 24GB VRAM. CPU and Ram are plentiful. It runs stable in that configuration. The web UI handles out-of-memory errors gracefully. In case this happens, you can easily tweak the settings to balance the quality/speed/VRAM-requirements.
 
-A video for 5 seconds in 960x544 (16:9, 540p) takes me about 15 minutes to render - with 40 infere steps and othere high quiality settings. 
+A video for 5 seconds in 480p takes me about 10 minutes to render - with 30 inference steps and other high quality settings, e.g. 14b model.
 
 ## Resources
-* For the GPU-Poor: https://github.com/deepbeepmeep/HunyuanVideoGP
-* For the non-GPU-Poor: https://github.com/Tencent/HunyuanVideo
+* For the GPU-Poor: https://github.com/deepbeepmeep/Wan2GP
+* For the non-GPU-Poor: https://github.com/Wan-Video/Wan2.1
 

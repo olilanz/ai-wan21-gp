@@ -10,12 +10,13 @@ WAN21_AUTO_UPDATE=${WAN21_AUTO_UPDATE:-0}
 CACHE_HOME="/workspace/cache"
 export HF_HOME="${CACHE_HOME}/huggingface"
 export TORCH_HOME="${CACHE_HOME}/torch"
-LORA_HOME="${CACHE_HOME}/lora"
-LORA_I2V_HOME="${CACHE_HOME}/lora_i2v"
+CKPTS_HOME="${CACHE_HOME}/ckpts"
+LORA_HOME="${CACHE_HOME}/loras"
+LORA_I2V_HOME="${CACHE_HOME}/loras_i2v"
 OUTPUT_HOME="/workspace/output"
 
 echo "📂 Setting up cache directories..."
-mkdir -p "${CACHE_HOME}" "${HF_HOME}" "${TORCH_HOME}" "${LORA_HOME}" "${LORA_I2V_HOME}" "${OUTPUT_HOME}"
+mkdir -p "${CACHE_HOME}" "${HF_HOME}"  "${TORCH_HOME}" "${CKPTS_HOME}" "${LORA_HOME}" "${LORA_I2V_HOME}" "${OUTPUT_HOME}"
 
 # Clone or update WAN21
 WAN21_HOME="${CACHE_HOME}/WAN21"
@@ -31,9 +32,12 @@ if [[ "$WAN21_AUTO_UPDATE" == "1" ]]; then
 fi
 
 # Ensure symlinks for models & output
+ln -sfn "${CKPTS_HOME}" "$WAN21_HOME/ckpts"
 ln -sfn "${LORA_HOME}" "$WAN21_HOME/lora"
 ln -sfn "${LORA_I2V_HOME}" "$WAN21_HOME/lora_i2v"
 ln -sfn "${OUTPUT_HOME}" "$WAN21_HOME/gradio_outputs"
+touch "/workspace/config.json"
+ln -sfn "/workspace/config.json" "$WAN21_HOME/gradio_config.json"  
 
 # Virtual environment setup
 VENV_HOME="${CACHE_HOME}/venv"
@@ -60,7 +64,7 @@ pip -q install --no-cache-dir -r "$WAN21_HOME/requirements.txt" \
     sageattention==1.0.6
 
 # Start the service
-WAN21_ARGS="--server-name 0.0.0.0 --server-port 7860 --compile --profile 1 --multiple-images"
+WAN21_ARGS="--server-name 0.0.0.0 --server-port 7860 --compile --profile 1 --multiple-images --verbose 2"
 
 echo "🚀 Starting WAN21 service..."
 cd "$WAN21_HOME"
