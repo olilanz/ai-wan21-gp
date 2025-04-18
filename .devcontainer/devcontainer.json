@@ -1,0 +1,37 @@
+{
+  "name": "Development Container",
+  "build": {
+    "dockerfile": "../Dockerfile",
+    "context": ".."
+  },
+  "containerEnv": {
+    "AUTO_UPDATE": "0"
+  },
+  "remoteUser": "root",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      },
+      "extensions": [
+        "ms-python.python",
+        "ms-vscode-remote.remote-containers",
+        "RooVeterinaryInc.roo-cline",
+        "yzhang.markdown-all-in-one",
+        "bierner.markdown-mermaid",
+        "wjfu99.nvidia-status-bar",
+        "ms-azuretools.vscode-docker"
+      ]
+    }
+  },
+  "mounts": [
+    "source=${localWorkspaceFolder},target=/workspace,type=bind",
+    "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,consistency=cached"
+  ],
+  "runArgs": [
+    "--gpus=all"
+  ],
+  "forwardPorts": [
+    7860
+  ]
+}
