@@ -12,7 +12,7 @@ The container requires considerable disk space for storage of the AI models. On 
 It may be advisable to store the cache outside of the container, e.g. by mounting a volume to /workspace.
 
 ## Variables
-WAN21_AUTO_UPDATE: Automatically updates the models and inference scripts to the latest version upon container start-up (default: 0).
+AUTO_UPDATE: Automatically updates the models and inference scripts to the latest version upon container start-up (default: 0).
  - 0: Don't update automatically. Use the scripts that are bundled.
  - 1: Update and use the latest features/models, but also accept that this may bring breaking changes.
 
@@ -36,7 +36,7 @@ docker run -it --rm --name ai-wan21-gp \
   --shm-size 24g --gpus all \
   -p 7861:7860 \
   -v /mnt/cache/appdata/ai-wan21-gp:/workspace \
-  -e WAN21_AUTO_UPDATE=1 \
+  -e AUTO_UPDATE=1 \
   olilanz/ai-wan21-gp
 ```
 Note that you need to have an NVIDIA GPU installed, including all dependencies for Docker.
