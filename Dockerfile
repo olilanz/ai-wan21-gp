@@ -30,9 +30,9 @@ RUN apt update && apt install -y \
 # Package the startup script and the latest version of the HVGP repositories
 WORKDIR /app
 
-RUN git clone --single-branch --depth=1 https://github.com/deepbeepmeep/Wan2GP.git WAN21 && \
-    tar -czf WAN21.tar.gz WAN21 && \
-    rm -rf WAN21
+RUN git clone --single-branch --depth=1 https://github.com/deepbeepmeep/Wan2GP.git APP && \
+    tar -czf APP.tar.gz APP && \
+    rm -rf APP
 
 COPY startup.sh startup.sh
 
@@ -40,7 +40,7 @@ COPY startup.sh startup.sh
 EXPOSE 7860
 
 # Parameters for the startup script
-ENV WAN21_AUTO_UPDATE=0
+ENV AUTO_UPDATE=0
 
 # Default command to run the container
 CMD ["bash", "./startup.sh"]

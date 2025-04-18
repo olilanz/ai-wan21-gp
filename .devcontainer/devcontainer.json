@@ -1,5 +1,5 @@
 {
-  "name": "Development Container",
+  "name": "AI-WAN21-GP Development",
   "build": {
     "dockerfile": "../Dockerfile",
     "context": ".."
@@ -25,7 +25,7 @@
     }
   },
   "mounts": [
-    "source=${localWorkspaceFolder},target=/workspace,type=bind",
+    "source=${localWorkspaceFolder}/scratch/,target=/workspace,type=bind",
     "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,consistency=cached"
   ],
   "runArgs": [

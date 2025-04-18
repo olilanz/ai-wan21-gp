@@ -2,10 +2,10 @@
 
 set -euo pipefail  # Exit on error, show commands, handle pipes safely
 
-echo "🔧 Starting WAN21 container startup script..."
+echo "🔧 Running startup script..."
 
 # Set up environment variables
-WAN21_AUTO_UPDATE=${WAN21_AUTO_UPDATE:-0}
+AUTO_UPDATE=${AUTO_UPDATE:-0}
 
 CACHE_HOME="/workspace/cache"
 export HF_HOME="${CACHE_HOME}/huggingface"
@@ -18,26 +18,26 @@ OUTPUT_HOME="/workspace/output"
 echo "📂 Setting up cache directories..."
 mkdir -p "${CACHE_HOME}" "${HF_HOME}"  "${TORCH_HOME}" "${CKPTS_HOME}" "${LORA_HOME}" "${LORA_I2V_HOME}" "${OUTPUT_HOME}"
 
-# Clone or update WAN21
-WAN21_HOME="${CACHE_HOME}/WAN21"
-if [ ! -d "$WAN21_HOME" ]; then
-    echo "📥 Unpacking WAN21 repository..."
-    mkdir -p "$WAN21_HOME"
-    tar -xzvf WAN21.tar.gz --strip-components=1 -C "$WAN21_HOME"
+# Clone or update application repository
+REPO_HOME="${CACHE_HOME}/repo"
+if [ ! -d "$REPO_HOME" ]; then
+    echo "📥 Unpacking app repository..."
+    mkdir -p "$REPO_HOME"
+    tar -xzvf APP.tar.gz --strip-components=1 -C "$REPO_HOME"
 fi
-if [[ "$WAN21_AUTO_UPDATE" == "1" ]]; then
-    echo "🔄 Updating the WAN21 repository..."
-    git -C "$WAN21_HOME" reset --hard
-    git -C "$WAN21_HOME" pull
+if [[ "$AUTO_UPDATE" == "1" ]]; then
+    echo "🔄 Updating the app repository..."
+    git -C "$REPO_HOME" reset --hard
+    git -C "$REPO_HOME" pull
 fi
 
 # Ensure symlinks for models & output
-ln -sfn "${CKPTS_HOME}" "$WAN21_HOME/ckpts"
-ln -sfn "${LORA_HOME}" "$WAN21_HOME/lora"
-ln -sfn "${LORA_I2V_HOME}" "$WAN21_HOME/lora_i2v"
-ln -sfn "${OUTPUT_HOME}" "$WAN21_HOME/gradio_outputs"
+ln -sfn "${CKPTS_HOME}" "$REPO_HOME/ckpts"
+ln -sfn "${LORA_HOME}" "$REPO_HOME/lora"
+ln -sfn "${LORA_I2V_HOME}" "$REPO_HOME/lora_i2v"
+ln -sfn "${OUTPUT_HOME}" "$REPO_HOME/gradio_outputs"
 touch "/workspace/config.json"
-ln -sfn "/workspace/config.json" "$WAN21_HOME/gradio_config.json"  
+ln -sfn "/workspace/config.json" "$REPO_HOME/gradio_config.json"  
 
 # Virtual environment setup
 VENV_HOME="${CACHE_HOME}/venv"
@@ -59,14 +59,14 @@ pip -q install --no-cache-dir \
     torchvision  \
     torchaudio \
     --index-url https://download.pytorch.org/whl/test/cu124  
-pip -q install --no-cache-dir -r "$WAN21_HOME/requirements.txt" \
+pip -q install --no-cache-dir -r "$REPO_HOME/requirements.txt" \
     flash-attn==2.7.2.post1 \
     sageattention==1.0.6
 
 # Start the service
-WAN21_ARGS="--server-name 0.0.0.0 --server-port 7860 --compile --profile 1 --multiple-images --verbose 2"
+APP_ARGS="--server-name 0.0.0.0 --server-port 7860 --compile --profile 1 --multiple-images --verbose 2"
 
-echo "🚀 Starting WAN21 service..."
-cd "$WAN21_HOME"
-python3 -u gradio_server.py ${WAN21_ARGS} 2>&1 | tee "${CACHE_HOME}/output.log"
+echo "🚀 Starting the application..."
+cd "$REPO_HOME"
+python3 -u gradio_server.py ${APP_ARGS} 2>&1 | tee "${CACHE_HOME}/output.log"
 echo "❌ The WAN21 service has terminated."
