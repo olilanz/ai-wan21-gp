@@ -68,5 +68,5 @@ APP_ARGS="--server-name 0.0.0.0 --server-port 7860 --compile --profile 1 --multi
 
 echo "🚀 Starting the application..."
 cd "$REPO_HOME"
-python3 -u gradio_server.py ${APP_ARGS} 2>&1 | tee "${CACHE_HOME}/output.log"
-echo "❌ The WAN21 service has terminated."
+python3 -u wgp.py ${APP_ARGS} 2>&1 | tee "${CACHE_HOME}/output.log"
+echo "❌ The application has terminated."
